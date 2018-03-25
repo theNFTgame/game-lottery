@@ -2,33 +2,30 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>jQuery Fullscreen Plugin demo</title>
+    <title>Lottery</title>
     <script src="lib/jquery-3.3.1.min.js"></script>
     <script src="lib/jquery.fullscreen-min.js"></script>
-    <script>
-    
-    $(function() {
-    
+    <script src="lib/papaparse.min.js"></script>
+    <script src="player.js"></script>
+    <link rel="stylesheet" href="player.css">
 
-    $(document).bind("fullscreenchange", function(e) {
-       console.log("Full screen changed.");
-       $("#status").text($(document).fullScreen() ? 
-           "Full screen enabled" : "Full screen disabled");
-    });
-    
-    $(document).bind("fullscreenerror", function(e) {
-       console.log("Full screen error.");
-       $("#status").text("Browser won't enter full screen mode for some reason.");
-    });
-    
-    });
-    
-    </script>
   </head>
   <body style="background:white">
-    <h1>jQuery Fullscreen Plugin demo</h1>
+    
+    <div class="sidebar left">
+      Hello World
+      <button class="mobile-grid-5" onclick="$(document).toggleFullScreen()">Fullscreen</button>
+    </div>
+    <div class="layer-setup">
+      <h1>Lottery setup</h1>
+      <label><input type="checkbox" id="skipEmptyLines"> Skip empty lines</label>
+      <input type="file" id="files" multiple>
+      
+      <button id="submit-parse">Parse</button>
+      <textarea id="output" ></textarea>
+      <button class=".my-sidebar">Setting</button>
 
-      <button onclick="$(document).toggleFullScreen()">Toggle Fullscreen mode (Document)</button><br />
+    </div>
 
 
       
