@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>jQuery Fullscreen Plugin demo</title>
+    <script src="lib/jquery-3.3.1.min.js"></script>
+    <script src="lib/jquery.fullscreen-min.js"></script>
+    <script>
+    
+    $(function() {
+    
+
+    $(document).bind("fullscreenchange", function(e) {
+       console.log("Full screen changed.");
+       $("#status").text($(document).fullScreen() ? 
+           "Full screen enabled" : "Full screen disabled");
+    });
+    
+    $(document).bind("fullscreenerror", function(e) {
+       console.log("Full screen error.");
+       $("#status").text("Browser won't enter full screen mode for some reason.");
+    });
+    
+    });
+    
+    </script>
+  </head>
+  <body style="background:white">
+    <h1>jQuery Fullscreen Plugin demo</h1>
+
+      <button onclick="$(document).toggleFullScreen()">Toggle Fullscreen mode (Document)</button><br />
+
+
+      
+  </body>
+</html>
