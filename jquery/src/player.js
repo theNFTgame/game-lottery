@@ -8,6 +8,7 @@ var parser;
 var pauseChecked = false;
 var printStepChecked = false;
 var member = [];
+var originalMember = [];
 var gameWinnerList = [];
 var winnerNumber = 0;
 var gameOption = [{
@@ -94,7 +95,7 @@ function buildConfig()
 	return {
 		delimiter: $('#delimiter').val(),
 		newline: getLineEnding(),
-		header: false,
+		header: true,
 		dynamicTyping: $('#dynamicTyping').prop('checked'),
 		preview: parseInt($('#preview').val() || 0),
 		step: $('#stream').prop('checked') ? stepFn : undefined,
@@ -172,9 +173,9 @@ function completeFn()
 	if (arguments[0]
 			&& arguments[0].data)
 		rows = arguments[0].data.length;
-	$('.join-number').html(rows - 1);
-	member = arguments[0].data;
-	g_PersonCount = rows - 1;
+	$('.join-number').html(rows );
+	originalMember = arguments[0].data;
+	g_PersonCount = rows;
 	console.log("Finished input (async). Time:", end-start, arguments);
 	console.log("Rows:", rows, "Stepped:", stepped, "Chunks:", chunks);
 }
@@ -246,34 +247,54 @@ function parseCsv(){
 			console.log("Synchronous parse results:", results);
 		}
 }
-function startGame(){
-	var drawer = draw(member.length - 1);
+//按照订单金额，增加购买每超amount 3800中奖几率
+function increaseChance(amount,list){
+	var tempList = [];
+	var times = 0;
+	for(i = 0; i < list.length; i++){
+		if(list[i]['Amount']>amount && list[i]['From Account Name']){
+			times = parseInt(list[i]['Amount']/amount)
+			for(j = 0; j < times; j++){
+				tempList.push(list[i]);
+			}
+		}
+	}
+	if(tempList.length > 0){
+		console.log('tempList',tempList);
+		return list.concat(...tempList);
+	}else{
+		return list
+	}
 	
+}
+//开始预先抽奖，确定中奖的index
+function startGame(){
+	member = increaseChance(3800,originalMember);
+	console.log('startGame:',member)
+	var drawer = draw(member.length - 1);
 	for (i = 0; i < gameOption.length; i++) { 
 		winnerNumber += gameOption[i].numbers;
 	}
-	// winnerNumber+=5; //避免空行出现的尴尬
-	console.log('winnerNumber',winnerNumber);
+	// console.log('winnerNumber',winnerNumber);
 	gameWinnerList = Array(winnerNumber).fill().map(()=>drawer.next().value);
 	var gameInfo = '';
 	for (i = 0; i < winnerNumber; i++) { 
-		console.log(member[gameWinnerList[i]]);
+		// console.log(member[gameWinnerList[i]]);
 		if(member[gameWinnerList[i]]){
 			gameInfo += 'winner ' + i + ': ' +gameWinnerList[i]+','+  member[gameWinnerList[i]] + "<br/>"
 		}
 	}
+	console.log('list:',gameInfo)
 	// $('.game-state').html(gameInfo);
 	// alert(gameInfo);
 }
 function startLottery(){
-	
-	
 	for (i = 0; i < gameOption.length; i++) { 
 		if(gameOption[i].numbers > gameOption[i].winnerId.length){
 			gameOption[i].winnerId.push(gameWinnerList[0]);
 			console.log('new', gameOption[i], member[gameWinnerList[0]]);
 			$('.game-state').append('<br/>' + member[gameWinnerList[0]]+' get the ' + gameOption[i].name + '!')
-			$('#ResultNum').html(member[gameWinnerList[0]][1]);
+			$('#ResultNum').html(member[gameWinnerList[0]]['From Account Name']);
 			winnerNumber = winnerNumber - 1;
 			gameWinnerList.splice(0,1);
 			return false;
@@ -299,13 +320,28 @@ function beginRndNum(trigger){
 		running = true;
 		$('#ResultNum').css('color','black');
 		$(trigger).html("Stop");
-		beginTimer();
+		beginTimer(3);
 	}
 }
 
-function updateRndNum(){
-	var num = Math.floor(Math.random()*g_PersonCount+1);
-	$('#ResultNum').html(member[num][1]);
+// 更新滚动信息
+function updateRndNum(max){
+	var num = Math.floor(Math.random()*g_PersonCount);
+	var display = originalMember[num]['From Account Name']
+	if(max){
+		num = Math.floor(Math.random()*(g_PersonCount - max));
+		if(num<max){
+			num = max - 1;
+		}
+		for (i = 0; i < max; i++) {
+			try {
+				display += '<br />' + originalMember[num+i-max]['From Account Name'];
+			} catch (error) {
+				console.log(i,num+i-max,JSON.stringify(member[num+i-max]));
+			}
+		}
+	}
+	$('#ResultNum').html(display);
 }
 
 function beginTimer(){
@@ -314,5 +350,5 @@ function beginTimer(){
 
 function beat() {
 	g_Timer = setTimeout(beat, g_Interval);
-	updateRndNum();
+	updateRndNum(3);
 }

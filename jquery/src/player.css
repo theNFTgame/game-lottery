@@ -1046,5 +1046,5 @@ input[type=number] {
 .game-state{
 	height: 300px;
 }
-#Result{border:3px solid #40AA53;margin:0 auto;text-align:center;width:70%;padding:50px 0;background:#efe;}
-#ResultNum{font-size:30pt;font-family:Verdana}
+#Result{border:3px solid #40AA53;margin:0 auto;text-align:center;width:80%;padding:50px 0;background:#efe;}
+#ResultNum{font-size:18pt;font-family:Verdana}
