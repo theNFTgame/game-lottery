@@ -7,10 +7,46 @@ var start, end;
 var parser;
 var pauseChecked = false;
 var printStepChecked = false;
+var member = [];
+var gameWinnerList = [];
+var gameOption = [{
+	numbers : 6,
+	winnerId:[],
+	name: '3RD'
+},{
+	numbers : 2,
+	winnerId:[],
+	name: '2ND'
+},{
+	numbers : 1,
+	winnerId:[],
+	name: '1ST'
+}
+]
 
-$(function()
-{
+$(function(){
+	screenInit();
 	showSetup();
+	$('#submit-parse').click(function(){
+		parseCsv();
+	});
+	$('#btn-start').click(function(){
+		startLottery();
+	});
+	$('#btn-setting').click(function(){
+		showSetup();
+	});
+});
+function * draw(amount){
+	const cards = Array(amount).fill().map((_,i)=>i+1); 
+
+	for(let i = amount - 1; i >= 0; i--){
+			let rand = Math.floor((i + 1) * Math.random());
+			[cards[rand], cards[i]] =  [cards[i], cards[rand]];
+			yield cards[i];
+	}
+}
+function screenInit(){
 	$(".sidebar.left").sidebar().trigger("sidebar:open");
 
 	$(".my-sidebar").on("sidebar:toggle", function () {
@@ -27,95 +63,14 @@ $(function()
 		console.log("Full screen error.");
 		$("#status").text("Browser won't enter full screen mode for some reason.");
 	});
-
-	$('#submit-parse').click(function()
-	{
-		stepped = 0;
-		chunks = 0;
-		rows = 0;
-
-		var txt = $('#input').val();
-		var localChunkSize = $('#localChunkSize').val();
-		var remoteChunkSize = $('#remoteChunkSize').val();
-		var files = $('#files')[0].files;
-		var config = buildConfig();
-
-		// NOTE: Chunk size does not get reset if changed and then set back to empty/default value
-		if (localChunkSize)
-			Papa.LocalChunkSize = localChunkSize;
-		if (remoteChunkSize)
-			Papa.RemoteChunkSize = remoteChunkSize;
-
-		pauseChecked = $('#step-pause').prop('checked');
-		printStepChecked = $('#print-steps').prop('checked');
-
-
-		if (files.length > 0)
-		{
-			if (!$('#stream').prop('checked') && !$('#chunk').prop('checked'))
-			{
-				for (var i = 0; i < files.length; i++)
-				{
-					if (files[i].size > 1024 * 1024 * 10)
-					{
-						alert("A file you've selected is larger than 10 MB; please choose to stream or chunk the input to prevent the browser from crashing.");
-						return;
-					}
-				}
-			}
-
-			start = performance.now();
-
-			$('#files').parse({
-				config: config,
-				before: function(file, inputElem)
-				{
-					console.log("Parsing file:", file);
-				},
-				complete: function()
-				{
-					console.log("Done with all files.");
-					showGame();
-				}
-			});
-		}
-		else
-		{
-			start = performance.now();
-			var results = Papa.parse(txt, config);
-			console.log("Synchronous parse results:", results);
-		}
-	});
-
-	$('#submit-unparse').click(function()
-	{
-		var input = $('#input').val();
-		var delim = $('#delimiter').val();
-
-		var results = Papa.unparse(input, {
-			delimiter: delim
-		});
-
-		console.log("Unparse complete!");
-		console.log("--------------------------------------");
-		console.log(results);
-		console.log("--------------------------------------");
-	});
-
-	$('#insert-tab').click(function()
-	{
-		$('#delimiter').val('\t');
-	});
-});
-
-
+}
 
 function buildConfig()
 {
 	return {
 		delimiter: $('#delimiter').val(),
 		newline: getLineEnding(),
-		header: $('#header').prop('checked'),
+		header: false,
 		dynamicTyping: $('#dynamicTyping').prop('checked'),
 		preview: parseInt($('#preview').val() || 0),
 		step: $('#stream').prop('checked') ? stepFn : undefined,
@@ -126,7 +81,7 @@ function buildConfig()
 		error: errorFn,
 		download: $('#download').prop('checked'),
 		fastMode: $('#fastmode').prop('checked'),
-		skipEmptyLines: $('#skipEmptyLines').prop('checked'),
+		skipEmptyLines: true,
 		chunk: $('#chunk').prop('checked') ? chunkFn : undefined,
 		beforeFirstChunk: undefined,
 	};
@@ -196,6 +151,7 @@ function completeFn()
 			&& arguments[0].data)
 		rows = arguments[0].data.length;
 	$('.join-number').html(rows);
+	member = arguments[0].data;
 	console.log("Finished input (async). Time:", end-start, arguments);
 	console.log("Rows:", rows, "Stepped:", stepped, "Chunks:", chunks);
 }
@@ -208,4 +164,101 @@ function showGame()
 {
 	$('.layer-setup').hide();
 	$('.layer-game').show();
+}
+function parseCsv(){
+	stepped = 0;
+		chunks = 0;
+		rows = 0;
+
+		var txt = $('#input').val();
+		var localChunkSize = $('#localChunkSize').val();
+		var remoteChunkSize = $('#remoteChunkSize').val();
+		var files = $('#files')[0].files;
+		var config = buildConfig();
+
+		// NOTE: Chunk size does not get reset if changed and then set back to empty/default value
+		if (localChunkSize)
+			Papa.LocalChunkSize = localChunkSize;
+		if (remoteChunkSize)
+			Papa.RemoteChunkSize = remoteChunkSize;
+
+		pauseChecked = $('#step-pause').prop('checked');
+		printStepChecked = $('#print-steps').prop('checked');
+
+
+		if (files.length > 0)
+		{
+			if (!$('#stream').prop('checked') && !$('#chunk').prop('checked'))
+			{
+				for (var i = 0; i < files.length; i++)
+				{
+					if (files[i].size > 1024 * 1024 * 10)
+					{
+						alert("A file you've selected is larger than 10 MB; please choose to stream or chunk the input to prevent the browser from crashing.");
+						return;
+					}
+				}
+			}
+
+			start = performance.now();
+
+			$('#files').parse({
+				config: config,
+				before: function(file, inputElem)
+				{
+					console.log("Parsing file:", file);
+				},
+				complete: function()
+				{	
+					console.log("Done with all files.");
+					startGame();
+					showGame();
+				}
+			});
+		}
+		else
+		{
+			start = performance.now();
+			var results = Papa.parse(txt, config);
+			console.log("Synchronous parse results:", results);
+		}
+}
+function startGame(){
+	var drawer = draw(member.length);
+	var winnerNumber = 0;
+	for (i = 0; i < gameOption.length; i++) { 
+		winnerNumber += gameOption[i].numbers;
+	}
+	winnerNumber+=5; //避免空行出现的尴尬
+	console.log('winnerNumber',winnerNumber);
+	gameWinnerList = Array(winnerNumber).fill().map(()=>drawer.next().value);
+	var gameInfo = '';
+	for (i = 0; i < winnerNumber; i++) { 
+		console.log(member[gameWinnerList[i]]);
+		if(member[gameWinnerList[i]]){
+			gameInfo += 'winner ' + i + ': ' +gameWinnerList[i]+','+  member[gameWinnerList[i]] + "<br/>"
+		}
+	}
+	// $('.game-state').html(gameInfo);
+	// alert(gameInfo);
+}
+function startLottery(){
+	if(gameWinnerList.length === 0){
+		console.log('no gameWinnerList');
+		return false
+	}
+	
+	for (i = 0; i < gameOption.length; i++) { 
+		if(gameOption[i].numbers > gameOption[i].winnerId.length){
+			gameOption[i].winnerId.push(gameWinnerList[0]);
+			gameWinnerList.splice(0,1);
+			console.log('new', gameOption[i], member[gameWinnerList[0]]);
+			// alert(member[gameWinnerList[0]][1]+' win!' + '\n' + gameOption[i].name);
+			$('.game-state').append('<br/>' + member[gameWinnerList[0]]+' get the ' + gameOption[i].name + '!')
+			return false;
+		}else{
+			console.log('next lv');
+		}
+	}
+	console.log('all Lottery',gameWinnerList,gameOption)
 }

@@ -15,24 +15,34 @@
     <div class="sidebar left">
       <button class="mobile-grid-5" onclick="$(document).toggleFullScreen()">Fullscreen</button>
     </div>
-    <div class="layer-setup">
+    <div class="grid-100 layer-setup">
       <h1>Lottery setup</h1>
       <!-- <label><input type="checkbox" id="skipEmptyLines"> Skip empty lines</label> -->
-      <p><input type="file" id="files" multiple></p>
+      <p><h3>Upload CSV file: </h3><input type="file" id="files" multiple></p>
       
-      
+      <div class="grid-100 winner-setting">
+          <h3>3rd info: </h3>
+          <label>Number: <input type="text" id="lv3number" placeholder="default" size="10"></label>
+          <label>Display: <input type="text" id="lv3display" placeholder="default" size="10"></label>
+          <h3>2nd info: </h3>
+          <label>Number: <input type="text" id="lv2number" placeholder="default" size="10"></label>
+          <label>Display: <input type="text" id="lv2display" placeholder="default" size="10"></label>
+          <h3>1st info: </h3>
+          <label>Number: <input type="text" id="lv1number" placeholder="default" size="10"></label>
+          <label>Display: <input type="text" id="lv1display" placeholder="default" size="10"></label>
+      </div>
       <p><button id="submit-parse">Save participants</button></p>
     </div>
-    <div class="layer-game">
+    <div class="grid-100 layer-game">
       <h1>Number of participants:<span class="join-number"></span></h1>
       <div class="game-box">
         <div class="game-state">
 
         </div>
         <div class="lottery-screen"></div>
-        <div class="btn-start"><button class="" id="submit-lottery">Start</button></div>  
+        <div id="btn-start"><button class="" id="submit-lottery">Start</button></div>  
       </div>
-      <button class="mobile-grid-5 .my-sidebar">Setting</button>
+      <button id="btn-setting" class="mobile-grid-5 .my-sidebar">Setting</button>
     </div>
 
       
