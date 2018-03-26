@@ -7,41 +7,53 @@ var start, end;
 var parser;
 var pauseChecked = false;
 var printStepChecked = false;
-var member = [];
-var originalMember = [];
-var gameWinnerList = [];
-var winnerNumber = 0;
+var member = []; //按金额提升次数后名单
+var originalMember = []; //初始数据导入名单
+var gameWinnerList = []; //获奖者列表
+var winnerNumber = 0; //总获奖数量
+var levelLeftover = 0; //本级别目前还剩几个未抽取
+var maxTogether = 25; //同时抽奖数量
 var gameOption = [{
-	numbers : 1,
-	winnerId:[],
-	name: 'level 6'
-},{
-	numbers : 1,
-	winnerId:[],
-	name: 'level 5'
-},{
-		numbers : 1,
-		winnerId:[],
-		name: 'level 4'
-	},{
-	numbers : 10,
-	winnerId:[],
-	name: 'level 3'
-},{
-	numbers : 5,
-	winnerId:[],
-	name: 'level 2'
-},{
-	numbers : 1,
-	winnerId:[],
-	name: 'level 1'
-}
-];
+			numbers : 107,
+			winnerId:[],
+			name: 'level 6',
+			offer: 1,
+			leftover :0
+		},{
+			numbers : 100,
+			winnerId:[],
+			name: 'level 5',
+			offer: 1,
+			leftover :0
+		},{
+				numbers : 25,
+				winnerId:[],
+				name: 'level 4',
+				offer: 1,
+				leftover :0
+			},{
+			numbers : 10,
+			winnerId:[],
+			name: 'level 3',
+			offer: 1,
+			leftover :0
+		},{
+			numbers : 5,
+			winnerId:[],
+			name: 'level 2',
+			offer: 1,
+			leftover :0
+		},{
+			numbers : 1,
+			winnerId:[],
+			name: 'level 1',
+			offer: 1,
+			leftover :0
+		}];
 var g_Interval = 1;
 var g_PersonCount = 1;//参加抽奖人数
 var g_Timer;
 var running = false;
-var gameLevel = 6;
 
 $(function(){
 	screenInit();
@@ -54,6 +66,9 @@ $(function(){
 	});
 	$('#btn-setting').click(function(){
 		showSetup();
+	});
+	$('#btn-showall').click(function(){
+		$('.lottery-screen').trigger();
 	});
 });
 function * draw(amount){
@@ -173,9 +188,8 @@ function completeFn()
 	if (arguments[0]
 			&& arguments[0].data)
 		rows = arguments[0].data.length;
-	$('.join-number').html(rows );
+	
 	originalMember = arguments[0].data;
-	g_PersonCount = rows;
 	console.log("Finished input (async). Time:", end-start, arguments);
 	console.log("Rows:", rows, "Stepped:", stepped, "Chunks:", chunks);
 }
@@ -260,7 +274,7 @@ function increaseChance(amount,list){
 		}
 	}
 	if(tempList.length > 0){
-		console.log('tempList',tempList);
+		// console.log('tempList',tempList);
 		return list.concat(...tempList);
 	}else{
 		return list
@@ -270,10 +284,17 @@ function increaseChance(amount,list){
 //开始预先抽奖，确定中奖的index
 function startGame(){
 	member = increaseChance(3800,originalMember);
-	console.log('startGame:',member)
+	// console.log('startGame:',member)
 	var drawer = draw(member.length - 1);
+	// 提取奖项数量，设置奖项每次抽取展示数量
 	for (i = 0; i < gameOption.length; i++) { 
 		winnerNumber += gameOption[i].numbers;
+		if(gameOption[i].numbers > 20){
+			gameOption[i].offer = 25;
+		}else{
+			gameOption[i].offer = 1;
+		}
+		gameOption[i].leftover = gameOption[i].numbers;
 	}
 	// console.log('winnerNumber',winnerNumber);
 	gameWinnerList = Array(winnerNumber).fill().map(()=>drawer.next().value);
@@ -284,25 +305,50 @@ function startGame(){
 			gameInfo += 'winner ' + i + ': ' +gameWinnerList[i]+','+  member[gameWinnerList[i]] + "<br/>"
 		}
 	}
-	console.log('list:',gameInfo)
+	$('.game-info').html('Number of participants:'+ member.length + ", " + gameOption[0].name + ' has ' + gameOption[0].leftover);
+	// console.log('list:',gameInfo)
 	// $('.game-state').html(gameInfo);
 	// alert(gameInfo);
 }
 function startLottery(){
+	
 	for (i = 0; i < gameOption.length; i++) { 
 		if(gameOption[i].numbers > gameOption[i].winnerId.length){
-			gameOption[i].winnerId.push(gameWinnerList[0]);
-			console.log('new', gameOption[i], member[gameWinnerList[0]]);
-			$('.game-state').append('<br/>' + member[gameWinnerList[0]]+' get the ' + gameOption[i].name + '!')
-			$('#ResultNum').html(member[gameWinnerList[0]]['From Account Name']);
-			winnerNumber = winnerNumber - 1;
-			gameWinnerList.splice(0,1);
+			if(gameOption[i].offer >1){
+				maxTogether = (gameOption[i].offer >= gameOption[i].leftover)? gameOption[i].leftover:gameOption[i].offer;
+			}
+			updateWinner(i);
 			return false;
 		}else{
 			console.log('next lv');
 		}
 	}
 	console.log('all Lottery',gameWinnerList,gameOption)
+}
+function updateWinner(levelId){
+	var display = '';
+	var log = '';
+	if(maxTogether >0){
+		for (i = 0; i < maxTogether; i++) { 
+			console.log('new', gameOption[levelId], member[gameWinnerList[0]]);
+			gameOption[levelId].winnerId.push(gameWinnerList[0]);
+			winnerNumber = winnerNumber - 1;
+			gameOption[levelId].leftover = gameOption[levelId].leftover -1;
+			levelLeftover = gameOption[levelId].leftover;
+			display += '<p>' + member[gameWinnerList[0]]['From Account Name'] + '</p>';
+			gameWinnerList.splice(0,1);
+		}
+		if( levelLeftover === 0 && gameOption[levelId + 1]){
+			maxTogether = gameOption[levelId + 1].offer;
+			log = "Next level is:" + " " + gameOption[levelId + 1].name + " has " + gameOption[levelId + 1].leftover+ " leftover, and will prize " +  maxTogether + " next time."
+			$('.game-info').html(log);
+		}else{
+			log = " " + gameOption[levelId].name + " has " + gameOption[levelId].leftover+ " leftover, and will prize " +  maxTogether + " next time.";
+			$('.game-info').html(log);
+		}
+		$('#ResultNum').html(display);
+	}
+	console.log('')
 }
 function beginRndNum(trigger){
 	if(gameWinnerList.length === 0 || winnerNumber === 0 ){
@@ -320,26 +366,23 @@ function beginRndNum(trigger){
 		running = true;
 		$('#ResultNum').css('color','black');
 		$(trigger).html("Stop");
-		beginTimer(3);
+		beginTimer();
 	}
 }
 
 // 更新滚动信息
 function updateRndNum(max){
-	var num = Math.floor(Math.random()*g_PersonCount);
-	var display = originalMember[num]['From Account Name']
-	if(max){
-		num = Math.floor(Math.random()*(g_PersonCount - max));
-		if(num<max){
-			num = max - 1;
-		}
-		for (i = 0; i < max; i++) {
-			try {
-				display += '<br />' + originalMember[num+i-max]['From Account Name'];
-			} catch (error) {
-				console.log(i,num+i-max,JSON.stringify(member[num+i-max]));
+	var num = Math.floor(Math.random()*originalMember.length);
+	var display = '<p>' + member[num]['From Account Name'] + '</p>';
+	try {
+		if(max>1){
+			num = Math.floor(Math.random()*(originalMember.length - max));
+			for (i = 0; i < max; i++) {
+				display += '<p>' + originalMember[num+i]['From Account Name'] + '</p>';
 			}
 		}
+	} catch (error) {
+		console.log('updateRndNum error',error,num,member[num],display);
 	}
 	$('#ResultNum').html(display);
 }
@@ -350,5 +393,5 @@ function beginTimer(){
 
 function beat() {
 	g_Timer = setTimeout(beat, g_Interval);
-	updateRndNum(3);
+	updateRndNum(maxTogether);
 }
