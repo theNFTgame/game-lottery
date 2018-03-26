@@ -9,20 +9,38 @@ var pauseChecked = false;
 var printStepChecked = false;
 var member = [];
 var gameWinnerList = [];
+var winnerNumber = 0;
 var gameOption = [{
-	numbers : 6,
+	numbers : 1,
 	winnerId:[],
-	name: '3RD'
-},{
-	numbers : 2,
-	winnerId:[],
-	name: '2ND'
+	name: 'level 6'
 },{
 	numbers : 1,
 	winnerId:[],
-	name: '1ST'
+	name: 'level 5'
+},{
+		numbers : 1,
+		winnerId:[],
+		name: 'level 4'
+	},{
+	numbers : 10,
+	winnerId:[],
+	name: 'level 3'
+},{
+	numbers : 5,
+	winnerId:[],
+	name: 'level 2'
+},{
+	numbers : 1,
+	winnerId:[],
+	name: 'level 1'
 }
-]
+];
+var g_Interval = 1;
+var g_PersonCount = 1;//参加抽奖人数
+var g_Timer;
+var running = false;
+var gameLevel = 6;
 
 $(function(){
 	screenInit();
@@ -30,8 +48,8 @@ $(function(){
 	$('#submit-parse').click(function(){
 		parseCsv();
 	});
-	$('#btn-start').click(function(){
-		startLottery();
+	$('#submit-lottery').click(function(){
+		beginRndNum(this);
 	});
 	$('#btn-setting').click(function(){
 		showSetup();
@@ -63,6 +81,12 @@ function screenInit(){
 		console.log("Full screen error.");
 		$("#status").text("Browser won't enter full screen mode for some reason.");
 	});
+
+	//game setting
+	for(i = 0; i < gameOption.length; i++){
+		$("input.level-number:eq("+i+")").val(gameOption[i].numbers);
+		$("input.level-name:eq("+i+")").val(gameOption[i].name);
+	}
 }
 
 function buildConfig()
@@ -145,13 +169,12 @@ function errorFn(error, file)
 function completeFn()
 {
 	end = performance.now();
-	if (!$('#stream').prop('checked')
-			&& !$('#chunk').prop('checked')
-			&& arguments[0]
+	if (arguments[0]
 			&& arguments[0].data)
 		rows = arguments[0].data.length;
-	$('.join-number').html(rows);
+	$('.join-number').html(rows - 1);
 	member = arguments[0].data;
+	g_PersonCount = rows - 1;
 	console.log("Finished input (async). Time:", end-start, arguments);
 	console.log("Rows:", rows, "Stepped:", stepped, "Chunks:", chunks);
 }
@@ -224,12 +247,12 @@ function parseCsv(){
 		}
 }
 function startGame(){
-	var drawer = draw(member.length);
-	var winnerNumber = 0;
+	var drawer = draw(member.length - 1);
+	
 	for (i = 0; i < gameOption.length; i++) { 
 		winnerNumber += gameOption[i].numbers;
 	}
-	winnerNumber+=5; //避免空行出现的尴尬
+	// winnerNumber+=5; //避免空行出现的尴尬
 	console.log('winnerNumber',winnerNumber);
 	gameWinnerList = Array(winnerNumber).fill().map(()=>drawer.next().value);
 	var gameInfo = '';
@@ -243,22 +266,53 @@ function startGame(){
 	// alert(gameInfo);
 }
 function startLottery(){
-	if(gameWinnerList.length === 0){
-		console.log('no gameWinnerList');
-		return false
-	}
+	
 	
 	for (i = 0; i < gameOption.length; i++) { 
 		if(gameOption[i].numbers > gameOption[i].winnerId.length){
 			gameOption[i].winnerId.push(gameWinnerList[0]);
-			gameWinnerList.splice(0,1);
 			console.log('new', gameOption[i], member[gameWinnerList[0]]);
-			// alert(member[gameWinnerList[0]][1]+' win!' + '\n' + gameOption[i].name);
 			$('.game-state').append('<br/>' + member[gameWinnerList[0]]+' get the ' + gameOption[i].name + '!')
+			$('#ResultNum').html(member[gameWinnerList[0]][1]);
+			winnerNumber = winnerNumber - 1;
+			gameWinnerList.splice(0,1);
 			return false;
 		}else{
 			console.log('next lv');
 		}
 	}
 	console.log('all Lottery',gameWinnerList,gameOption)
+}
+function beginRndNum(trigger){
+	if(gameWinnerList.length === 0 || winnerNumber === 0 ){
+		console.log('no gameWinnerList');
+		return false
+	}
+	if(running){
+		running = false;
+		clearTimeout(g_Timer);
+		startLottery();		
+		$(trigger).html("Start");
+		$('#ResultNum').css('color','red');
+	}
+	else{
+		running = true;
+		$('#ResultNum').css('color','black');
+		$(trigger).html("Stop");
+		beginTimer();
+	}
+}
+
+function updateRndNum(){
+	var num = Math.floor(Math.random()*g_PersonCount+1);
+	$('#ResultNum').html(member[num][1]);
+}
+
+function beginTimer(){
+	g_Timer = setTimeout(beat, g_Interval);
+}
+
+function beat() {
+	g_Timer = setTimeout(beat, g_Interval);
+	updateRndNum();
 }

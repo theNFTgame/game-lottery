@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Lottery</title>
+    <title>YAMA Lucky 7</title>
     <script src="lib/jquery-3.3.1.min.js"></script>
     <script src="lib/jquery.fullscreen-min.js"></script>
     <script src="lib/papaparse.min.js"></script>
@@ -13,7 +13,7 @@
   <body style="background:white">
     
     <div class="sidebar left">
-      <button class="mobile-grid-5" onclick="$(document).toggleFullScreen()">Fullscreen</button>
+      <button class="" onclick="$(document).toggleFullScreen()">Fullscreen</button>
     </div>
     <div class="grid-100 layer-setup">
       <h1>Lottery setup</h1>
@@ -21,28 +21,40 @@
       <p><h3>Upload CSV file: </h3><input type="file" id="files" multiple></p>
       
       <div class="grid-100 winner-setting">
-          <h3>3rd info: </h3>
-          <label>Number: <input type="text" id="lv3number" placeholder="default" size="10"></label>
-          <label>Display: <input type="text" id="lv3display" placeholder="default" size="10"></label>
-          <h3>2nd info: </h3>
-          <label>Number: <input type="text" id="lv2number" placeholder="default" size="10"></label>
-          <label>Display: <input type="text" id="lv2display" placeholder="default" size="10"></label>
-          <h3>1st info: </h3>
-          <label>Number: <input type="text" id="lv1number" placeholder="default" size="10"></label>
-          <label>Display: <input type="text" id="lv1display" placeholder="default" size="10"></label>
+          <h3>level 6 info: </h3>
+          <label>Number: <input type="text" id="lv6number" class="level-number" placeholder="default" size="10"></label>
+          <label>Display: <input type="text" id="lv6display"  class="level-name" placeholder="default" size="10"></label>
+          <h3>level 5 info: </h3>
+          <label>Number: <input type="text" id="lv5number" class="level-number"  placeholder="default" size="10"></label>
+          <label>Display: <input type="text" id="lv5display" class="level-name"  placeholder="default" size="10"></label>
+          <h3>level 4 info: </h3>
+          <label>Number: <input type="text" id="lv4number" class="level-number"  placeholder="default" size="10"></label>
+          <label>Display: <input type="text" id="lv4display" class="level-name"  placeholder="default" size="10"></label>
+          <h3>level 3 info: </h3>
+          <label>Number: <input type="text" id="lv3number" class="level-number"  placeholder="default" size="10"></label>
+          <label>Display: <input type="text" id="lv3display" class="level-name"  placeholder="default" size="10"></label>
+          <h3>level 2 info: </h3>
+          <label>Number: <input type="text" id="lv2number" class="level-number"  placeholder="default" size="10"></label>
+          <label>Display: <input type="text" id="lv2display" class="level-name"  placeholder="default" size="10"></label>
+          <h3>level 1 info: </h3>
+          <label>Number: <input type="text" id="lv1number" class="level-number"  placeholder="default" size="10"></label>
+          <label>Display: <input type="text" id="lv1display" class="level-name"  placeholder="default" size="10"></label>
       </div>
       <p><button id="submit-parse">Save participants</button></p>
     </div>
     <div class="grid-100 layer-game">
       <h1>Number of participants:<span class="join-number"></span></h1>
       <div class="game-box">
+        <div id="Result" style="color:#40AA53">
+            <span id="ResultNum">0</span>
+        </div>
         <div class="game-state">
 
         </div>
         <div class="lottery-screen"></div>
         <div id="btn-start"><button class="" id="submit-lottery">Start</button></div>  
       </div>
-      <button id="btn-setting" class="mobile-grid-5 .my-sidebar">Setting</button>
+      <button id="btn-setting" class=".my-sidebar">Setting</button>
     </div>
 
       
