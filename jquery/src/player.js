@@ -10,6 +10,7 @@ var printStepChecked = false;
 
 $(function()
 {
+	showSetup();
 	$(".sidebar.left").sidebar().trigger("sidebar:open");
 
 	$(".my-sidebar").on("sidebar:toggle", function () {
@@ -74,6 +75,7 @@ $(function()
 				complete: function()
 				{
 					console.log("Done with all files.");
+					showGame();
 				}
 			});
 		}
@@ -193,7 +195,17 @@ function completeFn()
 			&& arguments[0]
 			&& arguments[0].data)
 		rows = arguments[0].data.length;
-	$('#output').html(JSON.stringify(arguments[0].data));
+	$('.join-number').html(rows);
 	console.log("Finished input (async). Time:", end-start, arguments);
 	console.log("Rows:", rows, "Stepped:", stepped, "Chunks:", chunks);
+}
+function showSetup()
+{
+	$('.layer-setup').show();
+	$('.layer-game').hide();
+}
+function showGame()
+{
+	$('.layer-setup').hide();
+	$('.layer-game').show();
 }

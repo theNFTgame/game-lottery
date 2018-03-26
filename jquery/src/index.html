@@ -13,20 +13,27 @@
   <body style="background:white">
     
     <div class="sidebar left">
-      Hello World
       <button class="mobile-grid-5" onclick="$(document).toggleFullScreen()">Fullscreen</button>
     </div>
     <div class="layer-setup">
       <h1>Lottery setup</h1>
-      <label><input type="checkbox" id="skipEmptyLines"> Skip empty lines</label>
-      <input type="file" id="files" multiple>
+      <!-- <label><input type="checkbox" id="skipEmptyLines"> Skip empty lines</label> -->
+      <p><input type="file" id="files" multiple></p>
       
-      <button id="submit-parse">Parse</button>
-      <textarea id="output" ></textarea>
-      <button class=".my-sidebar">Setting</button>
-
+      
+      <p><button id="submit-parse">Save participants</button></p>
     </div>
+    <div class="layer-game">
+      <h1>Number of participants:<span class="join-number"></span></h1>
+      <div class="game-box">
+        <div class="game-state">
 
+        </div>
+        <div class="lottery-screen"></div>
+        <div class="btn-start"><button class="" id="submit-lottery">Start</button></div>  
+      </div>
+      <button class="mobile-grid-5 .my-sidebar">Setting</button>
+    </div>
 
       
   </body>
