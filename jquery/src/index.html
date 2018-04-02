@@ -7,13 +7,22 @@
     <script src="lib/jquery.fullscreen-min.js"></script>
     <script src="lib/papaparse.min.js"></script>
     <script src="player.js"></script>
-    <link rel="stylesheet" href="player.css">
+    <link rel="stylesheet" href="assets/css/player.css">
 
   </head>
   <body style="background:white">
     
     <div class="sidebar left">
       <button class="" onclick="$(document).toggleFullScreen()">Fullscreen</button>
+    </div>
+    <div class="grid-100 layer-index">
+      <div class="head"></div>
+      <div class="buttons">
+        <a href="#" class="btn setting"></a>
+        <a href="#" class="btn input"></a>
+        <a href="#" class="btn game"></a>
+        <a href="#" class="btn winner"></a>
+      </div>
     </div>
     <div class="grid-100 layer-setup">
       <h1>Lottery setup</h1>
@@ -58,6 +67,9 @@
       </div>
       <button id="btn-showall" class=".my-sidebar">Show All winner</button>
       <button id="btn-setting" class=".my-sidebar">Setting</button>
+    </div>
+    <div class="grid-100 layer-winner">
+
     </div>
 
       
