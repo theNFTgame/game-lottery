@@ -2,6 +2,7 @@
 (function($){$.fn.sidebar=function(options){var self=this;if(self.length>1){return self.each(function(){$(this).sidebar(options)})}var width=self.outerWidth();var height=self.outerHeight();var settings=$.extend({speed:200,side:"left",isClosed:false,close:true},options);self.on("sidebar:open",function(ev,data){var properties={};properties[settings.side]=0;settings.isClosed=null;self.stop().animate(properties,$.extend({},settings,data).speed,function(){settings.isClosed=false;self.trigger("sidebar:opened")})});self.on("sidebar:close",function(ev,data){var properties={};if(settings.side==="left"||settings.side==="right"){properties[settings.side]=-self.outerWidth()}else{properties[settings.side]=-self.outerHeight()}settings.isClosed=null;self.stop().animate(properties,$.extend({},settings,data).speed,function(){settings.isClosed=true;self.trigger("sidebar:closed")})});self.on("sidebar:toggle",function(ev,data){if(settings.isClosed){self.trigger("sidebar:open",[data])}else{self.trigger("sidebar:close",[data])}});function closeWithNoAnimation(){self.trigger("sidebar:close",[{speed:0}])}if(!settings.isClosed&&settings.close){closeWithNoAnimation()}$(window).on("resize",function(){if(!settings.isClosed){return}closeWithNoAnimation()});self.data("sidebar",settings);return self};$.fn.sidebar.version="3.3.2"})(jQuery);
 
 
+
 var stepped = 0, chunks = 0, rows = 0;
 var start, end;
 var parser;
@@ -16,37 +17,37 @@ var maxTogether = 25; //同时抽奖数量
 var gameOption = [{
 			numbers : 107,
 			winnerId:[],
-			name: 'level 6',
+			name: '6th Prize',
 			offer: 1,
 			leftover :0
 		},{
 			numbers : 100,
 			winnerId:[],
-			name: 'level 5',
+			name: '5th Prize',
 			offer: 1,
 			leftover :0
 		},{
 				numbers : 25,
 				winnerId:[],
-				name: 'level 4',
+				name: '4th Prize',
 				offer: 1,
 				leftover :0
 			},{
 			numbers : 10,
 			winnerId:[],
-			name: 'level 3',
+			name: '3rd Prize',
 			offer: 1,
 			leftover :0
 		},{
 			numbers : 5,
 			winnerId:[],
-			name: 'level 2',
+			name: '2nd Prize',
 			offer: 1,
 			leftover :0
 		},{
 			numbers : 1,
 			winnerId:[],
-			name: 'level 1',
+			name: '1st Prize',
 			offer: 1,
 			leftover :0
 		}];
@@ -54,30 +55,51 @@ var g_Interval = 1;
 var g_PersonCount = 1;//参加抽奖人数
 var g_Timer;
 var running = false;
-
+var fileName = '';
 //  事件绑定
 $(function(){
 	screenInit();
 	$('#submit-parse').click(function(){
-		parseCsv();
+		if(fileName===''){
+			alert("Please chooese member file.");
+		}else{
+			var titles = $("input.level-name");
+			console.log('parse',titles,titles[5].value,$('.run-title'));
+			$('.run-title').html(titles[5].value + ' Winner');
+			parseCsv();
+		}
 	});
 	$('#submit-lottery').click(function(){
 		beginRndNum(this);
+		
 	});
-	$('#btn-setting').click(function(){
+	$('.buttons .btn-setting').click(function(){
 		showSetup();
 	});
-	$('#btn-showall').click(function(){
-		$('.lottery-screen').trigger();
-	});
-	$('.buttons .setting').click(function(){
-		showSetup();
-	});
-	$('.buttons .game').click(function(){
+	$('.buttons .btn-game').click(function(){
 		showGame();
 	});
-	$('.buttons .winner').click(function(){
+	$('.buttons .btn-winner').click(function(){
 		showWinner();
+	});
+	// 文件上传框美化
+	var inputs = document.querySelectorAll( '.inputfile' );
+	Array.prototype.forEach.call( inputs, function( input ){
+		var label	 = input.nextElementSibling,
+			labelVal = label.innerHTML;
+
+			// console.log('label',label)
+		input.addEventListener( 'change', function( e )
+		{
+			// console.log('addEventListener change',e);
+			
+			fileName = e.target.value.split( '\\' ).pop();
+
+			if( fileName )
+				label.querySelector( 'span' ).innerHTML = fileName;
+			else
+				label.innerHTML = labelVal;
+		});
 	});
 });
 // 界面切换
@@ -124,6 +146,8 @@ function startGame(){
 		}
 	}
 	$('.game-info').html('Number of participants:'+ member.length + ", " + gameOption[0].name + ' has ' + gameOption[0].leftover);
+	showTip(gameOption[0].numbers,gameOption[0].offer,0)
+	showTipHeader(0);
 	// console.log('list:',gameInfo)
 	// $('.game-state').html(gameInfo);
 	// alert(gameInfo);
@@ -155,21 +179,33 @@ function updateWinner(levelId){
 			winnerNumber = winnerNumber - 1;
 			gameOption[levelId].leftover = gameOption[levelId].leftover -1;
 			levelLeftover = gameOption[levelId].leftover;
-			display += '<p>' + member[gameWinnerList[0]]['From Account Name'] + '</p>';
+			if(maxTogether ===1 ){
+				display += '<div class="item item-one">' + member[gameWinnerList[0]]['From Account Name'] + '</div>';
+			}else{
+				display += '<div class="item">' + member[gameWinnerList[0]]['From Account Name'] + '</div>';
+			}
 			gameWinnerList.splice(0,1);
 		}
 		if( levelLeftover === 0 && gameOption[levelId + 1]){
 			maxTogether = gameOption[levelId + 1].offer;
 			log = "Next level is:" + " " + gameOption[levelId + 1].name + " has " + gameOption[levelId + 1].leftover+ " leftover, and will prize " +  maxTogether + " next time."
 			$('.game-info').html(log);
+			$('.run-title').html(gameOption[levelId].name + ' Winner');
+
+			showTip(gameOption[levelId + 1].numbers,maxTogether,0);
+			showTipHeader(levelId + 1);
 		}else{
 			log = " " + gameOption[levelId].name + " has " + gameOption[levelId].leftover+ " leftover, and will prize " +  maxTogether + " next time.";
 			$('.game-info').html(log);
+			$('.run-title').html(gameOption[levelId].name + ' Winner');
+			showTip(gameOption[levelId].numbers,maxTogether,Math.ceil((gameOption[levelId].numbers - levelLeftover) / maxTogether));
+			showTipHeader(levelId);
 		}
 		$('#ResultNum').html(display);
 	}
 	console.log('')
 }
+
 // 启动跑名字动画
 function beginRndNum(trigger){
 	if(gameWinnerList.length === 0 || winnerNumber === 0 ){
@@ -211,9 +247,11 @@ function screenInit(){
 
 	$(".layer-index").show();
 	//game setting
-	for(i = 0; i < gameOption.length; i++){
-		$("input.level-number:eq("+i+")").val(gameOption[i].numbers);
-		$("input.level-name:eq("+i+")").val(gameOption[i].name);
+	for(i = gameOption.length; i > 0; --i){
+		// console.log(i-1,gameOption[i-1]);
+		var j = 6-i;
+		$("input.level-number:eq("+j+")").val(gameOption[i-1].numbers);
+		$("input.level-name:eq("+j+")").val(gameOption[i-1].name);
 	}
 }
 // 生成洗牌结果
@@ -395,13 +433,15 @@ function increaseChance(amount,list){
 // 更新滚动信息
 function updateRndNum(max){
 	var num = Math.floor(Math.random()*originalMember.length);
-	var display = '<p>' + member[num]['From Account Name'] + '</p>';
+	var display = '';
 	try {
 		if(max>1){
 			num = Math.floor(Math.random()*(originalMember.length - max));
 			for (i = 0; i < max; i++) {
-				display += '<p>' + originalMember[num+i]['From Account Name'] + '</p>';
+				display += '<div class="item">' + originalMember[num+i]['From Account Name'] + '</div>';
 			}
+		}else{
+			display += '<div class="item item-one">' + originalMember[num+i]['From Account Name'] + '</div>';
 		}
 	} catch (error) {
 		console.log('updateRndNum error',error,num,member[num],display);
@@ -416,4 +456,41 @@ function beginTimer(){
 function beat() {
 	g_Timer = setTimeout(beat, g_Interval);
 	updateRndNum(maxTogether);
+}
+// 按照总数，每组数，当前抽第几组，展示右侧抽奖提示信息
+function showTip(all,pre,now){
+	var before = '<div class="item">';
+	var beforeOk = '<div class="item itemfinish">';
+	var after = '</div>';
+	var display = '';
+	if(pre > 1){
+		var numbers = Math.ceil(all / pre);
+		var showText;
+		for(i = 0; i < numbers; i++){
+			if( i === numbers-1 ){
+				showText = '' + (1 + i* pre ) + ' ~ ' + all
+			}else{
+				showText = '' + (1 + i* pre ) + ' ~ ' + ((i+1)* pre )
+			}
+			
+			if(i <= now-1){
+				display += beforeOk + '✓' + after;
+			}else{
+				display += before + showText + after;
+			}
+		}
+	}else{
+		for(i = 0; i < all; i++){
+			if(i <= now-1){
+				display += beforeOk + '' + '✓' + after;
+			}else{
+				display += before + '' + (i + 1) + after;
+			}
+		}
+	}
+	console.log("showTip",all,pre,now,display);
+	$('.pirze-info').html(display);
+}
+function showTipHeader(i){
+  $('.pirze-info-head').html(gameOption[i].name + " Winner List");
 }
