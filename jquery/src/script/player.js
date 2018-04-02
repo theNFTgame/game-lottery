@@ -58,7 +58,6 @@ var running = false;
 //  事件绑定
 $(function(){
 	screenInit();
-	showSetup();
 	$('#submit-parse').click(function(){
 		parseCsv();
 	});
@@ -72,17 +71,33 @@ $(function(){
 		$('.lottery-screen').trigger();
 	});
 	$('.buttons .setting').click(function(){
-
-	})
+		showSetup();
+	});
+	$('.buttons .game').click(function(){
+		showGame();
+	});
+	$('.buttons .winner').click(function(){
+		showWinner();
+	});
 });
 // 界面切换
 function showSetup(){
 	$('.layer-setup').show();
 	$('.layer-game').hide();
+	$(".layer-index").hide();
+	$(".layer-winner").hide();
 }
 function showGame(){
 	$('.layer-setup').hide();
 	$('.layer-game').show();
+	$(".layer-index").hide();
+	$(".layer-winner").hide();
+}
+function showWinner(){
+	$('.layer-setup').hide();
+	$('.layer-game').hide();
+	$(".layer-index").hide();
+	$(".layer-winner").show();
 }
 //开始预先抽奖，确定中奖的index
 function startGame(){
@@ -194,6 +209,7 @@ function screenInit(){
 		$("#status").text("Browser won't enter full screen mode for some reason.");
 	});
 
+	$(".layer-index").show();
 	//game setting
 	for(i = 0; i < gameOption.length; i++){
 		$("input.level-number:eq("+i+")").val(gameOption[i].numbers);
