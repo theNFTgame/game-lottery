@@ -44,6 +44,27 @@ body{
 	background: #ff6122 ;
 	
 }
+.buttons .btn {
+	display: inline-block;
+	color: #fff;
+	font-size: 16px;
+	position: relative;
+	width: 120px;
+	text-align: center;
+	height: 110px;
+}
+.buttons .btn:before {
+		position: absolute;
+		content: " ";
+		width: 0;
+		height: 0;
+		border: solid transparent;
+		top: 25%;
+		left: 50%;
+		border-width: 5px;
+  border-top-color: #fff;
+  margin-left: -10px;
+}
 .gamescreen {
 	height: 100%;
 	min-height: 750px;
@@ -143,7 +164,7 @@ body{
 	margin: 0 auto;
 	padding-left: 60px;
 }
-.layer-setup  .buttons .btn-save , .layer-game  .buttons .btn-start{
+.layer-setup  .buttons .btn-save , .layer-game  .buttons .btn-start ,.layer-winner .btn-game{
 	width: 480px;
 	height: 110px;
 	line-height: 100px;
@@ -262,27 +283,7 @@ body{
 
 
 
-.buttons .btn {
-	display: inline-block;
-	color: #fff;
-	font-size: 16px;
-	position: relative;
-	width: 120px;
-	text-align: center;
-	height: 110px;
-}
-.buttons .btn:before {
-		position: absolute;
-		content: " ";
-		width: 0;
-		height: 0;
-		border: solid transparent;
-		top: 25%;
-		left: 50%;
-		border-width: 5px;
-  border-top-color: #fff;
-  margin-left: -10px;
-}
+
 .sidebar {
 	position: absolute;
 	top: 0px;
@@ -328,8 +329,34 @@ body{
 	outline: 1px dotted #fff;
 	outline: -webkit-focus-ring-color auto 5px;
 }
-
-
+.game-state {
+	width: 980px;
+	margin: 80px auto 0;
+	position: relative;
+	height: auto;
+	color: #FFFFFF ;
+	font-size: 16px;
+	line-height: 22px;
+}
+.winner-box {
+	padding: 40px;
+	padding-left: 120px;
+	position: relative;
+}
+.winner-box .lever-name {
+	position: absolute;
+	color: #FEBF1A ;
+	font-size: 26px;
+	left: 0;
+	top: 10px;
+}
+.winner-box .info {
+	display: inline-block;
+	width: 50%;
+}
+.winner-box .info .name {
+	font-size: 11px;
+}
 .inputfile + label svg {
 	width: 1em;
 	height: 1em;

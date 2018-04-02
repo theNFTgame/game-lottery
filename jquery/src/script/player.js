@@ -64,12 +64,23 @@ $(function(){
 			alert("Please chooese member file.");
 		}else{
 			var titles = $("input.level-name");
-			console.log('parse',titles,titles[5].value,$('.run-title'));
+			// console.log('parse',titles,titles[5].value,$('.run-title'));
 			$('.run-title').html(titles[5].value + ' Winner');
+			//更新输入配置
+			var inputNumbers = $('.level-number');
+			var inputName = $('.level-name')
+			for (i = 0; i < inputNumbers.length; i++) { 
+				console.log('inputNumbers',i,(5-i),gameOption[(5-i)])
+				gameOption[(5-i)].numbers = Number(inputNumbers[i].value);
+				gameOption[(5-i)].name = inputName[i].value;
+			}
+			console.log('gameOption',gameOption);
 			parseCsv();
 		}
 	});
 	$('#submit-lottery').click(function(){
+
+
 		beginRndNum(this);
 		
 	});
@@ -120,6 +131,7 @@ function showWinner(){
 	$('.layer-game').hide();
 	$(".layer-index").hide();
 	$(".layer-winner").show();
+	showWinnerInfo();
 }
 //开始预先抽奖，确定中奖的index
 function startGame(){
@@ -175,7 +187,7 @@ function updateWinner(levelId){
 	if(maxTogether >0){
 		for (i = 0; i < maxTogether; i++) { 
 			console.log('new', gameOption[levelId], member[gameWinnerList[0]]);
-			gameOption[levelId].winnerId.push(gameWinnerList[0]);
+			gameOption[levelId].winnerId.push(member[gameWinnerList[0]]);
 			winnerNumber = winnerNumber - 1;
 			gameOption[levelId].leftover = gameOption[levelId].leftover -1;
 			levelLeftover = gameOption[levelId].leftover;
@@ -190,7 +202,7 @@ function updateWinner(levelId){
 			maxTogether = gameOption[levelId + 1].offer;
 			log = "Next level is:" + " " + gameOption[levelId + 1].name + " has " + gameOption[levelId + 1].leftover+ " leftover, and will prize " +  maxTogether + " next time."
 			$('.game-info').html(log);
-			$('.run-title').html(gameOption[levelId].name + ' Winner');
+			$('.run-title').html(gameOption[levelId + 1].name + ' Winner');
 
 			showTip(gameOption[levelId + 1].numbers,maxTogether,0);
 			showTipHeader(levelId + 1);
@@ -208,6 +220,9 @@ function updateWinner(levelId){
 
 // 启动跑名字动画
 function beginRndNum(trigger){
+
+	
+
 	if(gameWinnerList.length === 0 || winnerNumber === 0 ){
 		console.log('no gameWinnerList');
 		return false
@@ -493,4 +508,24 @@ function showTip(all,pre,now){
 }
 function showTipHeader(i){
   $('.pirze-info-head').html(gameOption[i].name + " Winner List");
+}
+
+function showWinnerInfo(){
+	var display = "";
+	for(i = gameOption.length; i > 0; i--){
+		
+
+		display += '<div class="winner-box"><div class="lever-name">' + gameOption[i-1].name + '</div>'
+		// console.log('gameOpti',display)
+		if(gameOption[i-1].winnerId.length){
+			for(j = 0; j < gameOption[i-1].winnerId.length; j++){
+				// console.log('gameOption[i-1].winnerId.',gameOption[i-1].winnerId)
+				display += '<div class="info"><span class="id">' + gameOption[i-1].winnerId[j]['From Account No.'] + '</span><span class="name">' + gameOption[i-1].winnerId[j]['From Account Name'] + '</span></div>'
+			}
+		}else{
+			display += '<div class="info">Not Start</div>'
+		}
+		display += '</div>'
+	}
+	$('.game-state').html(display);
 }
