@@ -149,18 +149,22 @@ function startGame(){
 		gameOption[i].leftover = gameOption[i].numbers;
 	}
 	// console.log('winnerNumber',winnerNumber);
-	gameWinnerList = Array(winnerNumber).fill().map(()=>drawer.next().value);
+	gameWinnerList = Array(winnerNumber+5).fill().map(()=>drawer.next().value);
 	var gameInfo = '';
 	for (i = 0; i < winnerNumber; i++) { 
 		// console.log(member[gameWinnerList[i]]);
 		if(member[gameWinnerList[i]]){
-			gameInfo += 'winner ' + i + ': ' +gameWinnerList[i]+','+  member[gameWinnerList[i]] + "<br/>"
+			gameInfo += 'winner ' + i + ': ' +gameWinnerList[i]+','+ JSON.stringify(member[gameWinnerList[i]] ) + "\n";
+			if(member[gameWinnerList[i]]['From Account No.'] === '') {
+				gameWinnerList.splice(i,1);
+				// alert(JSON.stringify(member[gameWinnerList[i]] ));
+			}
 		}
 	}
 	$('.game-info').html('Number of participants:'+ member.length + ", " + gameOption[0].name + ' has ' + gameOption[0].leftover);
 	showTip(gameOption[0].numbers,gameOption[0].offer,0)
 	showTipHeader(0);
-	// console.log('list:',gameInfo)
+	console.log('list:',gameInfo);
 	// $('.game-state').html(gameInfo);
 	// alert(gameInfo);
 }
@@ -192,9 +196,9 @@ function updateWinner(levelId){
 			gameOption[levelId].leftover = gameOption[levelId].leftover -1;
 			levelLeftover = gameOption[levelId].leftover;
 			if(maxTogether ===1 ){
-				display += '<div class="item item-one">' + member[gameWinnerList[0]]['From Account Name'] + '</div>';
+				display += '<div class="item item-one"><span class="id">' + member[gameWinnerList[0]]['From Account No.'] + '</span><span class="name">' +  member[gameWinnerList[0]]['From Account Name']  + '</span></div>';
 			}else{
-				display += '<div class="item">' + member[gameWinnerList[0]]['From Account Name'] + '</div>';
+				display += '<div class="item"><span class="id">' + member[gameWinnerList[0]]['From Account No.'] + '</span><span class="name">' +  member[gameWinnerList[0]]['From Account Name']  + '</span></div>';
 			}
 			gameWinnerList.splice(0,1);
 		}
@@ -225,6 +229,7 @@ function beginRndNum(trigger){
 
 	if(gameWinnerList.length === 0 || winnerNumber === 0 ){
 		console.log('no gameWinnerList');
+		$(trigger).html("Finish");
 		return false
 	}
 	if(running){
@@ -453,13 +458,16 @@ function updateRndNum(max){
 		if(max>1){
 			num = Math.floor(Math.random()*(originalMember.length - max));
 			for (i = 0; i < max; i++) {
-				display += '<div class="item">' + originalMember[num+i]['From Account Name'] + '</div>';
+				
+				// '<div class="item item-one"><span class="id">' + member[gameWinnerList[0]]['From Account No.'] + '</span><span class="id">' +  member[gameWinnerList[0]]['From Account Name']  + '</span></div>'
+				display += '<div class="item"><span class="id">' + originalMember[num+i]['From Account No.'] + '</span><span class="name">' + originalMember[num+i]['From Account Name'] + '</div>';
 			}
 		}else{
-			display += '<div class="item item-one">' + originalMember[num+i]['From Account Name'] + '</div>';
+			// console.log("try", num+i,JSON.stringify(member[num+i]))
+			display += '<div class="item item-one"><span class="id">' + member[num+i]['From Account No.'] + '</span><span class="name">' + member[num+i]['From Account Name'] + '</div>';
 		}
 	} catch (error) {
-		console.log('updateRndNum error',error,num,member[num],display);
+		console.log('updateRndNum error',error,num,member[num]);
 	}
 	$('#ResultNum').html(display);
 }

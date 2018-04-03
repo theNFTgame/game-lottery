@@ -219,15 +219,25 @@ body{
 	line-height: 20px;
 	height: 20px;
 	background-color: #FEDCAE ;
+	text-align: left;
+}
+#Result .item .id{
+	padding-left: 20px;
+	padding-right: 40px;
 }
 #Result .item:nth-child(2n-1){
 	background-color: #FFE9CA ;
 }
 #Result .item-one{
 	font-size: 46px;
-	line-height: 500px;
+	line-height: 100px;
 	height: 500px;
+	text-align: center;
 } 
+#Result .item-one .id{
+	display: block;
+	padding-top: 120px;
+}
 .game-box .run-title{
 	width: 272px;
 	height: 40px;
