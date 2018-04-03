@@ -93,6 +93,10 @@ $(function(){
 	$('.buttons .btn-winner').click(function(){
 		showWinner();
 	});
+	$('.buttons .btn-exprot').click(function(){
+		exprotToCsv();
+	});
+	
 	// 文件上传框美化
 	var inputs = document.querySelectorAll( '.inputfile' );
 	Array.prototype.forEach.call( inputs, function( input ){
@@ -536,4 +540,86 @@ function showWinnerInfo(){
 		display += '</div>'
 	}
 	$('.game-state').html(display);
+}
+// 整理导出数据
+function exprotToCsv(){
+	var args = {
+		filename: 'lottery_winner_export.csv'
+	}
+	var exprotData = [];
+	var exItem = {};
+	for(i = gameOption.length; i > 0; i--){
+		if(gameOption[i-1].winnerId.length){
+			for(j = 0; j < gameOption[i-1].winnerId.length; j++){
+				exItem = {
+					prize: gameOption[i-1].name,
+					userId: gameOption[i-1].winnerId[j]['From Account No.'],
+					userName: gameOption[i-1].winnerId[j]['From Account Name'],
+					orderAmout: gameOption[i-1].winnerId[j]['Amount']
+				}
+				exprotData.push(exItem);
+			}
+		}else{
+			exItem = {
+				prize: gameOption[i-1].name,
+				userId: '',
+				userName: '',
+				orderAmout: ''
+			}
+			exprotData.push(exItem);
+		}
+	}
+	args.arrayOfObjects = exprotData;
+	downloadCSV(args);
+}
+// 导出数据格式化
+function convertArrayOfObjectsToCSV(args) {
+	var result, ctr, keys, columnDelimiter, lineDelimiter, data;
+	data = args.data || null;
+
+	if (data == null || !data.length) {
+			return null;
+	}
+
+	columnDelimiter = args.columnDelimiter || ',';
+	lineDelimiter = args.lineDelimiter || '\n';
+	keys = Object.keys(data[0]);
+
+	result = '';
+	result += keys.join(columnDelimiter);
+	result += lineDelimiter;
+
+	data.forEach(function(item) {
+			ctr = 0;
+			keys.forEach(function(key) {
+					if (ctr > 0) result += columnDelimiter;
+					result += item[key];
+					ctr++;
+			});
+
+			result += lineDelimiter;
+
+	});
+	return result;
+}
+// 导出下载CSV
+function downloadCSV(args) {
+	var data, filename, link;
+
+	var csv = convertArrayOfObjectsToCSV({
+			data: args.arrayOfObjects
+	});
+
+	if (csv == null) return;
+	filename = args.filename || 'export.csv';
+
+	if (!csv.match(/^data:text\/csv/i)) {
+			csv = 'data:text/csv;charset=utf-8,' + csv;
+	}
+
+	data = encodeURI(csv);
+	link = document.createElement('a');
+	link.setAttribute('href', data);
+	link.setAttribute('download', filename);
+	link.click();
 }
