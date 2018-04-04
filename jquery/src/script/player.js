@@ -605,7 +605,7 @@ function convertArrayOfObjectsToCSV(args) {
 // 导出下载CSV
 function downloadCSV(args) {
 	var data, filename, link;
-
+	
 	var csv = convertArrayOfObjectsToCSV({
 			data: args.arrayOfObjects
 	});
@@ -613,8 +613,9 @@ function downloadCSV(args) {
 	if (csv == null) return;
 	filename = args.filename || 'export.csv';
 
+	var BOM = "\uFEFF";
 	if (!csv.match(/^data:text\/csv/i)) {
-			csv = 'data:text/csv;charset=utf-8,' + csv;
+			csv = 'data:text/csv;charset=utf-8,'+ BOM + csv;
 	}
 
 	data = encodeURI(csv);
