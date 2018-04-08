@@ -1,0 +1,401 @@
+body {
+	font-family: 'Source Sans Pro', sans-serif;
+}
+
+h1 {
+	text-align: center;
+}
+
+textarea {
+	box-sizing: border-box;
+	font: 14px/1.25em Menlo, Monaco, 'Courier New', monospace;
+	width: 100%;
+	padding: 10px;
+	max-width: 900px;
+	height: 200px;
+}
+
+label {
+	display: block;
+}
+
+input[type=number] {
+	width: 55px;
+}
+
+
+.text-center {
+	text-align: center;
+}
+
+
+.game-state{
+	height: 300px;
+}
+* {
+	padding: 0;
+	margin: 0;
+}
+html ,body{
+	height: 100%;
+	min-width: 975px;
+}
+body{
+	background: #ff6122 ;
+	
+}
+.buttons .btn {
+	display: inline-block;
+	color: #fff;
+	font-size: 16px;
+	position: relative;
+	width: 120px;
+	text-align: center;
+	height: 110px;
+}
+.buttons .btn:before {
+		position: absolute;
+		content: " ";
+		width: 0;
+		height: 0;
+		border: solid transparent;
+		top: 25%;
+		left: 50%;
+		border-width: 5px;
+  border-top-color: #fff;
+  margin-left: -10px;
+}
+.gamescreen {
+	height: 100%;
+	min-height: 750px;
+	min-width: 975px;
+}
+
+.lottery-screen {
+	display: none;
+}
+.game-layer {
+	display: none;
+	height: 100%;
+}
+.layer-index .indexbox{
+	width: 100%;
+	height: 100%;
+	min-height: 760px;
+	background: url("../images/index_bg.png") no-repeat center center;
+	background-size:  120%;
+}
+.layer-index .head{
+	width: 972px;
+	height: 480px;
+	background: url("../images/index_title.png") no-repeat bottom center;
+	background-size: 80%;
+	/* background-size: cover; */
+	margin: 0 auto;
+	position: relative;
+	z-index: 999;
+}
+.layer-index .head:before{
+	position: absolute;
+	display: block;
+	color:#fff;
+	content: "Trusty E-Commerce leads the world to be rich.";
+	text-align: center;
+	width: 972px;
+	height: 20px;
+	bottom: -12px;
+	font-size: 22px;
+}
+.layer-index .buttons{
+	position: absolute;
+	bottom: 16%;
+	left:50%;
+	margin-left: -486px;
+	width: 972px;
+	height: 579px;
+	background: url("../images/index_btn.png") no-repeat bottom center;
+	background-size: 80%;
+}
+.layer-index .links {
+	width: 730px;
+	height: 100px;
+	position: absolute;
+	bottom: 0px;
+	left: 50%;
+	margin-left: -360px;
+}
+.layer-index .links a {
+	width: 176px;
+	height: 100px;
+	display: inline-block;
+	text-indent: -999em;
+}
+.winner-setting {
+	padding: 20px 0;
+	width: 930px;
+	margin: 0 auto;
+}
+.winner-setting .level-box{
+	width: 400px;
+	padding-left: 40px;
+	height: 204px;
+	background: url("../images/input_bg.png") no-repeat top left;
+	background-size: 100%;
+	display: inline-block;
+	margin:10px 10px; 
+	color:#fff;
+}
+.level-box h3{
+	display: block;
+	height:64px;
+	line-height: 64px;
+	font-size: 24px;
+	margin-bottom: 20px;
+}
+.level-box label {
+	display: inline-block;
+	line-height: 42px;
+	height: 42px;
+	width: 120px;
+	margin-bottom: 10px;
+	color: #333;
+}
+.level-box input{
+	display: inline-block;
+	line-height: 42px;
+	height: 42px;
+	width: 220px;
+	margin-bottom: 10px;
+	border: none;
+	font-size: 22px;
+	padding: 0 10px;
+}
+.buttons {
+	width: 900px;
+	margin: 0 auto;
+	padding-left: 60px;
+}
+.layer-setup  .buttons .btn-save , .layer-game  .buttons .btn-start ,.layer-winner .btn-game{
+	width: 480px;
+	height: 110px;
+	line-height: 100px;
+	font-size: 48px;
+	text-decoration: none;
+	color: #FF6600;
+	background: url("../images/general_btn.png") no-repeat top left;
+	margin-left: 30px;
+	margin-right: 50px;
+}
+.layer-index  .buttons .btn:before, .layer-setup  .buttons .btn-save:before{
+	display: none;
+}
+.layer-game {
+	background: url("../images/bg.png") repeat-x top center;
+}
+.layer-game .game-info{
+	width: 900px;
+	height: 80px;
+	line-height: 80px;
+	border:1px solid #FEBF1A ;
+	margin: 0 auto; 
+	font-size: 24px;
+	color: #fff;
+	text-align: center;
+}
+.layer-game  .buttons .btn-start.active{
+	background: url("../images/general2_btn.png") no-repeat top left;
+}
+.game-box {
+	width: 980px;
+	margin: 80px auto 0;
+	position: relative;
+	height: 600px;
+}
+#Result, .game-box .pirze-info{
+	position: relative;
+	border:2px solid #711B03;
+	margin:0;
+	text-align:center;
+	width:60%;
+	background:#FEDCAE;
+	border-radius: 20px;
+	height: 510px;
+	overflow:hidden;
+	padding-top: 50px;
+	margin-bottom: 10px;
+}
+#Result .item {
+	color:#6F5222;
+	font-size: 16px;
+	line-height: 20px;
+	height: 20px;
+	background-color: #FEDCAE ;
+	text-align: left;
+}
+#Result .item .id{
+	padding-left: 20px;
+	padding-right: 40px;
+}
+#Result .item:nth-child(2n-1){
+	background-color: #FFE9CA ;
+}
+#Result .item-one{
+	font-size: 46px;
+	line-height: 100px;
+	height: 500px;
+	text-align: center;
+} 
+#Result .item-one .id{
+	display: block;
+	padding-top: 120px;
+}
+.game-box .run-title{
+	width: 272px;
+	height: 40px;
+	line-height: 28px;
+	font-size: 20px;
+	text-decoration: none;
+	color: #FFF;
+	text-align: center;
+	padding-top: 60px;
+	position: absolute;
+	top: -62px;
+  left: 29%;
+	margin-left: -136px;
+	background: url("../images/crown.png") no-repeat top left;
+	z-index: 9;
+}
+.game-box .pirze-info{
+	position: absolute;
+	width:36%;
+	right: 0;
+	top: 0;
+}
+.game-box .pirze-info-head{
+	position: absolute;
+	width:36%;
+	right: 0;
+	top: 0;
+	z-index: 1;
+	text-align: center;
+	font-size: 18px;
+	line-height: 50px;
+	height: 50px;
+}
+.pirze-info .item {
+	position: relative;
+	text-align: center;
+	width: 38%;
+	background: #FFE9CA;
+	display: inline-block;
+	height: 60px;
+	line-height: 60px;
+	margin: 5px 0 15px 30px;
+	float: left;
+	border-radius: 10px;
+	color: #FF6600 ;
+	font-size: 20px;
+}
+.pirze-info .itemfinish{
+	background: #FF6600;	
+	font-size: 55px;
+	color: #fff;
+}
+
+
+
+
+.sidebar {
+	position: absolute;
+	top: 0px;
+	left: 4px;
+}
+.btn-fullscreen {
+	width:24px;
+	height: 24px;
+	text-indent: -999em;
+	background: none;
+	border: none;
+	background: url("../images/fullscreen.png") no-repeat bottom center;
+	background-size: 100%;
+}
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.inputfile + label {
+	width: 760px;
+	font-size: 1rem;
+	/* 20px */
+	font-weight: 700;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	cursor: pointer;
+	display: inline-block;
+	overflow: hidden;
+	padding: 0.625rem 1.25rem;
+	margin: 0 auto 0.2rem;
+	display: block;
+	border-radius: 20px;
+	/* 10px 20px */
+}
+
+.inputfile:focus + label,
+.inputfile.has-focus + label {
+	outline: 1px dotted #fff;
+	outline: -webkit-focus-ring-color auto 5px;
+}
+.game-state {
+	width: 980px;
+	margin: 80px auto 0;
+	position: relative;
+	height: auto;
+	color: #FFFFFF ;
+	font-size: 16px;
+	line-height: 22px;
+}
+.winner-box {
+	padding: 40px;
+	padding-left: 120px;
+	position: relative;
+}
+.winner-box .lever-name {
+	position: absolute;
+	color: #FEBF1A ;
+	font-size: 26px;
+	left: 0;
+	top: 10px;
+}
+.winner-box .info {
+	display: inline-block;
+	width: 50%;
+}
+.winner-box .info .name {
+	font-size: 11px;
+}
+.inputfile + label svg {
+	width: 1em;
+	height: 1em;
+	vertical-align: middle;
+	fill: currentColor;
+	margin-top: -0.25em;
+	/* 4px */
+	margin-right: 0.25em;
+	/* 4px */
+}
+.inputfile-2 + label {
+	color: #fff;
+	border: 2px solid currentColor;
+	background-color: #ff8142
+}
+
+.inputfile-2:focus + label,
+.inputfile-2.has-focus + label,
+.inputfile-2 + label:hover {
+	color: #722040;
+}
