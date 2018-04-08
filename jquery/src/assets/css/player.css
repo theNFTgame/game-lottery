@@ -95,6 +95,17 @@ body{
 	position: relative;
 	z-index: 999;
 }
+.layer-index .head:before{
+	position: absolute;
+	display: block;
+	color:#fff;
+	content: "Trusty E-Commerce leads the world to be rich.";
+	text-align: center;
+	width: 972px;
+	height: 20px;
+	bottom: -12px;
+	font-size: 22px;
+}
 .layer-index .buttons{
 	position: absolute;
 	bottom: 16%;
